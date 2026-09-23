@@ -1,0 +1,101 @@
+ 
+ generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PASSENGER
+  DRIVER
+}
+
+enum RideStatus {
+  REQUESTED
+  MATCHED
+  DRIVER_ARRIVED
+  STARTED
+  COMPLETED
+  CANCELLED
+}
+
+enum PoolStatus {
+  OPEN
+  FULL
+  STARTED
+  COMPLETED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  vehicle      Vehicle?
+  rideRequests RideRequest[]
+}
+
+model Vehicle {
+  id        String   @id @default(uuid())
+  name      String
+  capacity  Int
+  isOnline  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  driver    User     @relation(fields: [driverId], references: [id])
+  driverId  String   @unique
+
+  pools     Pool[]
+}
+
+model Pool {
+  id             String     @id @default(uuid())
+  availableSeats Int
+  status         PoolStatus @default(OPEN)
+  createdAt      DateTime   @default(now())
+
+  vehicle        Vehicle    @relation(fields: [vehicleId], references: [id])
+  vehicleId      String
+
+  rideRequests   RideRequest[]
+  poolMembers    PoolMember[]
+}
+
+model RideRequest {
+  id              String     @id @default(uuid())
+  pickupArea      String
+  destinationArea String
+  pickupLat       Float
+  pickupLng       Float
+  seatsRequested  Int        @default(1)
+  farePaisa       Int        @default(0)
+  status          RideStatus @default(REQUESTED)
+  createdAt       DateTime   @default(now())
+
+  passenger       User       @relation(fields: [passengerId], references: [id])
+  passengerId     String
+
+  pool            Pool?      @relation(fields: [poolId], references: [id])
+  poolId          String?
+
+  poolMember      PoolMember?
+}
+
+model PoolMember {
+  id            String   @id @default(uuid())
+  farePaisa     Int
+  joinedAt      DateTime @default(now())
+
+  pool          Pool        @relation(fields: [poolId], references: [id])
+  poolId        String
+
+  rideRequest   RideRequest @relation(fields: [rideRequestId], references: [id])
+  rideRequestId String      @unique
+}

@@ -186,4 +186,122 @@ export class RidesService {
       });
     });
   }
+  
+    // DRIVER METHODS
+  async getDriverRides(driverId: string) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { driverId },
+    });
+
+    if (!vehicle) throw new NotFoundException('No vehicle found');
+
+    return this.prisma.pool.findMany({
+      where: { vehicleId: vehicle.id },
+      include: {
+        rideRequests: {
+          include: {
+            passenger: { select: { id: true, name: true, phone: true } },
+          },
+        },
+        vehicle: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async acceptRide(rideRequestId: string, driverId: string) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { driverId },
+    });
+
+    if (!vehicle) throw new NotFoundException('No vehicle found');
+    if (!vehicle.isOnline) throw new BadRequestException('Vehicle is offline');
+
+    const rideRequest = await this.prisma.rideRequest.findUnique({
+      where: { id: rideRequestId },
+    });
+
+    if (!rideRequest) throw new NotFoundException('Ride not found');
+    if (rideRequest.status !== 'REQUESTED')
+      throw new BadRequestException('Ride already matched');
+
+    return this.prisma.$transaction(async (tx) => {
+      // Create new pool
+      const pool = await tx.pool.create({
+        data: {
+          vehicleId: vehicle.id,
+          availableSeats: vehicle.capacity - rideRequest.seatsRequested,
+          status:
+            vehicle.capacity - rideRequest.seatsRequested === 0
+              ? 'FULL'
+              : 'OPEN',
+        },
+      });
+
+      // Add pool member
+      await tx.poolMember.create({
+        data: {
+          poolId: pool.id,
+          rideRequestId: rideRequest.id,
+          farePaisa: rideRequest.farePaisa,
+        },
+      });
+
+      // Update ride request
+      return tx.rideRequest.update({
+        where: { id: rideRequestId },
+        data: { status: 'MATCHED', poolId: pool.id },
+      });
+    });
+  }
+
+  async updateRideStatus(
+    rideRequestId: string,
+    driverId: string,
+    status: RideStatus,
+  ) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { driverId },
+    });
+
+    if (!vehicle) throw new NotFoundException('No vehicle found');
+
+    const rideRequest = await this.prisma.rideRequest.findUnique({
+      where: { id: rideRequestId },
+      include: { pool: true },
+    });
+
+    if (!rideRequest) throw new NotFoundException('Ride not found');
+    if (rideRequest.pool?.vehicleId !== vehicle.id)
+      throw new ForbiddenException('Not your ride');
+
+    // Valid transitions
+    const validTransitions = {
+      MATCHED: 'DRIVER_ARRIVED',
+      DRIVER_ARRIVED: 'STARTED',
+      STARTED: 'COMPLETED',
+    };
+
+    if (validTransitions[rideRequest.status] !== status) {
+      throw new BadRequestException(
+        `Cannot transition from ${rideRequest.status} to ${status}`,
+      );
+    }
+
+    return this.prisma.rideRequest.update({
+      where: { id: rideRequestId },
+      data: { status },
+    });
+  }
+
+  async getPendingRides() {
+    return this.prisma.rideRequest.findMany({
+      where: { status: 'REQUESTED' },
+      include: {
+        passenger: { select: { id: true, name: true, phone: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
 }

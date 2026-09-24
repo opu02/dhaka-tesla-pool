@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { RidesService } from './rides.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RideStatus } from '@prisma/client';
 
 @Controller('rides')
 export class RidesController {
@@ -48,4 +49,34 @@ export class RidesController {
   cancelRide(@Param('id') id: string, @Request() req) {
     return this.ridesService.cancelRide(id, req.user.id);
   }
+  
+    // DRIVER ROUTES
+  @UseGuards(JwtAuthGuard)
+  @Get('driver/pending')
+  getPendingRides() {
+    return this.ridesService.getPendingRides();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('driver/my-rides')
+  getDriverRides(@Request() req) {
+    return this.ridesService.getDriverRides(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/accept')
+  acceptRide(@Param('id') id: string, @Request() req) {
+    return this.ridesService.acceptRide(id, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() body: { status: RideStatus },
+  ) {
+    return this.ridesService.updateRideStatus(id, req.user.id, body.status);
+  }
+
 }

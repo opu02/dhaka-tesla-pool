@@ -1,9 +1,12 @@
- 
 # 🛺 Dhaka Tesla Pool
 
 > **Share a seat. Split the fare. Survive Dhaka traffic.**
 
 A full-stack ride pooling MVP built for the RoBenDevs engineering challenge. Passengers share battery-powered "Tesla" rickshaws, split fares automatically, and track rides in real time.
+
+🌐 **Live Demo:** https://dhaka-tesla-pool-lilac.vercel.app
+🔧 **Backend API:** https://dhaka-tesla-pool-het6.onrender.com
+🎬 **Demo Video:** [Link TBD]
 
 ---
 
@@ -76,7 +79,7 @@ Nusrat wants to get from Banani to Mohakhali. Rafiq wants to get from Banani to 
 Browser → Next.js 14 (App Router) → NestJS API → PostgreSQL
 ```
 
-feature/* branches → main → pre-release → release/v1.0.0
+feature/* branches → master → pre-release → release/v1.0.0
 
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full architecture diagram and ERD.
@@ -94,6 +97,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full architecture diagram a
 | Auth | JWT + bcrypt | Stateless, no paid service needed |
 | Styling | Tailwind CSS + Custom CSS | Fast, utility-first, dark theme |
 | Container | Docker + docker-compose | One-command setup |
+| Backend Hosting | Render (free tier) | Free, supports Node.js |
+| Frontend Hosting | Vercel (free tier) | Free, perfect for Next.js |
 
 **Why NestJS over Express?**
 NestJS enforces module separation (AuthModule, RidesModule, PoolsModule etc.) which maps directly to the domain model. At interview, every architectural decision has a clear home. Express would work but requires more self-discipline to keep organized.
@@ -137,7 +142,7 @@ fare = 3000 + (1.5 × 500) - 1000 = 2750 paisa = ৳27.50
 
 
 **Why paisa (integer)?**
-Floating point arithmetic causes rounding errors in financial calculations. Integer paisa avoids `৳29.999999` type bugs. Standard practice in fintech.
+Floating point arithmetic causes rounding errors in financial calculations. Integer paisa avoids ৳29.999999 type bugs. Standard practice in fintech.
 
 **Payment:** Simulated TeslaPay wallet (no real gateway).
 
@@ -313,7 +318,7 @@ npm test
 ## ⚠️ Known Limitations
 
 - No real-time updates (polling would need to be added)
-- WSL2 IP changes on PC restart — update DATABASE_URL manually
+- Free Render instance spins down after inactivity (50s cold start)
 - No payment gateway (simulated TeslaPay)
 - No map visualization (predefined areas)
 - No rating system
@@ -347,9 +352,11 @@ Claude initially suggested using Redis for the concurrency solution. I rejected 
 
 ## 🌐 Deployment
 
-- **Frontend:** Vercel — [Link TBD]
-- **Backend:** Railway — [Link TBD]
-- **Database:** Railway PostgreSQL — [Link TBD]
+| Service | URL |
+|---|---|
+| Frontend (Vercel) | https://dhaka-tesla-pool-lilac.vercel.app |
+| Backend (Render) | https://dhaka-tesla-pool-het6.onrender.com |
+| Database | Render PostgreSQL (dhaka-tesla-db) |
 
 ---
 
@@ -366,3 +373,4 @@ Claude initially suggested using Redis for the concurrency solution. I rejected 
 3. A driver can only have one vehicle
 4. Cancellation allowed only in REQUESTED or MATCHED status
 5. Geography simplified to predefined Dhaka areas with fixed coordinates
+6. Free tier hosting: Render free instance may have 50s cold start delay on first request

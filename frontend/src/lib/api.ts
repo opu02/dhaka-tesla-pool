@@ -1,4 +1,3 @@
- 
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -21,19 +20,19 @@ export default api;
 export const register = (data: any) => api.post('/auth/register', data);
 export const login = (data: any) => api.post('/auth/login', data);
 
-// Rides
+// Rides — Passenger
 export const requestRide = (data: any) => api.post('/rides/request', data);
 export const getMyRides = () => api.get('/rides/my-rides');
 export const cancelRide = (id: string) => api.patch(`/rides/${id}/cancel`);
 
-// Driver
+// Rides — Driver
 export const getPendingRides = () => api.get('/rides/driver/pending');
 export const getDriverRides = () => api.get('/rides/driver/my-rides');
-export const acceptRide = (id: string) => api.patch(`/rides/${id}/accept`);
+export const acceptRide = (id: string) => api.patch(`/rides/driver/${id}/accept`);
 export const updateRideStatus = (id: string, status: string) =>
-  api.patch(`/rides/${id}/status`, { status });
+  api.patch(`/rides/driver/${id}/status`, { status });
 
 // Vehicles
 export const createVehicle = (data: any) => api.post('/vehicles', data);
 export const getMyVehicle = () => api.get('/vehicles/my-vehicle');
-export const toggleOnline = () => api.patch('/vehicles/toggle-online'); 
+export const toggleOnline = () => api.patch('/vehicles/toggle-online');

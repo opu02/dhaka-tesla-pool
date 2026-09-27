@@ -2,15 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
   
-  (await app).enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'https://dhaka-tesla-pool-lilac.vercel.app',
+      'https://dhaka-tesla-pool-git-master-opu02s-projects.vercel.app',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
 
-  (await app).listen(process.env.PORT || 3001);
+  await app.listen(process.env.PORT || 3001);
 }
 bootstrap();

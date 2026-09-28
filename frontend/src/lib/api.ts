@@ -28,9 +28,9 @@ export const cancelRide = (id: string) => api.patch(`/rides/${id}/cancel`);
 // Rides — Driver
 export const getPendingRides = () => api.get('/rides/driver/pending');
 export const getDriverRides = () => api.get('/rides/driver/my-rides');
-export const acceptRide = (id: string) => api.patch(`/rides/driver/${id}/accept`);
+export const acceptRide = (id: string) => api.patch(`/rides/${id}/accept`);
 export const updateRideStatus = (id: string, status: string) =>
-  api.patch(`/rides/driver/${id}/status`, { status });
+  api.patch(`/rides/${id}/status`, { status });
 
 // Vehicles
 export const createVehicle = (data: any) => api.post('/vehicles', data);

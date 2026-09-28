@@ -29,14 +29,14 @@ export class RidesController {
     return this.ridesService.getDriverRides(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Patch('driver/:id/accept')
+    @UseGuards(JwtAuthGuard)
+  @Patch(':id/accept')
   acceptRide(@Param('id') id: string, @Request() req) {
     return this.ridesService.acceptRide(id, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('driver/:id/status')
+  @Patch(':id/status')
   updateStatus(
     @Param('id') id: string,
     @Request() req,

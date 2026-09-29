@@ -454,7 +454,7 @@ Claude initially suggested using Redis for the concurrency solution. I rejected 
 
 ## 🎬 Demo Video
 
-[Link TBD — 6 minute Loom video]
+[🎬 Watch Demo Video](https://www.loom.com/share/4cc046b0f76345c28c8cb4fd172173de)
 
 ---
 

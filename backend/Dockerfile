@@ -13,4 +13,4 @@ RUN npm run build
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma db push && node dist/src/main.js"]
+CMD ["node", "dist/src/main.js"]

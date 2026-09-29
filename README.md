@@ -45,6 +45,26 @@ Nusrat wants to get from Banani to Mohakhali. Rafiq wants to get from Banani to 
 
 ---
 
+## 📸 Screenshots
+
+### Login Page
+![Login](docs/screenshots/Screenshot%20(1057).png)
+
+### Passenger Dashboard — Request Ride
+![Passenger Request](docs/screenshots/Screenshot%20(1058).png)
+
+### Passenger Dashboard — My Rides
+![Passenger Rides](docs/screenshots/Screenshot%20(1059).png)
+
+### Driver Dashboard
+![Driver Dashboard](docs/screenshots/Screenshot%20(1060).png)
+
+### Driver — Pending Rides
+![Driver Pending](docs/screenshots/Screenshot%20(1061).png)
+
+### Driver — My Pools
+![Driver Pools](docs/screenshots/Screenshot%20(1062).png)
+
 ## ✅ Features Implemented
 
 ### Passenger

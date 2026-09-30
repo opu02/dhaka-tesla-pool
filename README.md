@@ -6,7 +6,7 @@ A full-stack ride pooling MVP built for the RoBenDevs engineering challenge. Pas
 
 🌐 **Live Demo:** https://dhaka-tesla-pool-lilac.vercel.app
 🔧 **Backend API:** https://dhaka-tesla-pool-het6.onrender.com
-🎬 **Demo Video:** [Link TBD]
+🎬 **Demo Video:** https://www.loom.com/share/4cc046b0f76345c28c8cb4fd172173de
 
 ---
 
